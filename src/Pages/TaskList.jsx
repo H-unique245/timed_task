@@ -1,56 +1,46 @@
-import React, { useState } from 'react'
+import { Box, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import TaskData from "../Components/TaskData";
 
 function TaskList() {
-    const finalList=JSON.parse(localStorage.getItem("taskList"))
-  
-    const [Data,setData] = useState(finalList);
+  const { taskList } = useSelector((store) => store.app);
 
-    const projectDates = [...new Set(Data.map((task) => task.project))];
+  const [Data, setData] = useState([]);
+
+  useEffect(() => {
+    setData(taskList);
+  }, [taskList]);
+  const projectDates = [...new Set(Data.map((task) => task.project))];
   return (
-    <div style={{display:"flex",flexDirection:"coloum"}} >
-           <ul>
-            {finalList.map((task, index) => (
-              <li key={index} style={{display:"flex",flexDirection:"row",gap:"25px",border:"1px solid red"}} >
-                <p>
-                  <strong>Project: </strong>
-                  {task.project}
-                </p>
-                <p>
-                  <strong>Task Name: </strong>
-                  {task.taskName}
-                </p>
-                <p>
-                  <strong>Time Spent: </strong>
-                  {task.timeSpent} hours
-                </p>
-                <p>
-                  <strong>Description: </strong>
-                  {task.description}
-                </p>
-                <p>
-                  <strong>Date: </strong>
-                  {task.date}
-                </p>
-              </li>
-            ))}
-          </ul>
-          <div>
-          {projectDates.map((project) => (
-        <TotalHours key={project} tasks={Data} project={project} />
-      ))}
-          </div>
-    </div>
-  
-  )
-
+    <HStack>
+      <TaskData data={Data} />
+      <Box>
+        <Heading>Total Hours Counted</Heading>
+        {projectDates.map((project) => (
+          <TotalHours key={project} tasks={Data} project={project} />
+        ))}
+      </Box>
+    </HStack>
+  );
 }
 
 const TotalHours = ({ tasks, project }) => {
-    const totalHours = tasks
-      .filter((task) => task.project === project)
-      .reduce((acc, curr) => acc + parseFloat(curr.timeSpent), 0);
-  
-    return <p>Total hours for {project}: {totalHours}</p>;
-  };
+  const totalHours = tasks
+    .filter((task) => task.project === project)
+    .reduce((acc, curr) => acc + parseFloat(curr.timeSpent), 0);
 
-export default TaskList
+  return (
+    <VStack>
+      <HStack>
+        <Box>
+          {" "}
+          Total hours for <Text as="b">{project} :</Text>{" "}
+        </Box>
+        <Box>{totalHours} Hours</Box>
+      </HStack>
+    </VStack>
+  );
+};
+
+export default TaskList;

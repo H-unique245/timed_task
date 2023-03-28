@@ -9,7 +9,7 @@ import { LOADING_PROJECT } from '../Redux/actionType';
  const ProjectForm = () => {
   const [projectName, setProjectName] = useState('');
   const [projects, setProjects] = useState([]);
-const {projectList,loading,error}= useSelector((store)=> store.app)
+const {projectList}= useSelector((store)=> store.app)
 const dispatch= useDispatch();  
 const navigate= useNavigate();
 
@@ -37,6 +37,7 @@ const handleSubmit = (event) => {
           type="text"
           id="projectName"
           value={projectName}
+          placeholder="Enter Project name"
           onChange={(event) => setProjectName(event.target.value)}
         />
         <Button type="submit">Add Project</Button>
